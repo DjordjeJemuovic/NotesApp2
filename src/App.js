@@ -1,60 +1,25 @@
-import { useState } from "react";
-import uuid from "react-uuid";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import SideBar from "./SideBar";
-import Main from "./Main";
+import Notes from "./pages/Notes";
+import CreateNote from "./pages/CreateNote";
+import EditNote from "./pages/EditNote";
+import dummyNotes from './dummy-notes';
+
+import { useState } from "react";
 
 function App() {
-  //useState()
-  const [notes, setNotes] = useState([]);
-  const [activeNote, setActiveNote] = useState(false);
-
-  //Funkcija koja dodaje nove Nodove
-  const onAddNote = () => {
-    //kreiranje Node objekta
-    const newNote = {
-      //uuid() je motoda za dimanicni ID,potrebno je instalirati njenu biblioteku pre implementacije
-      id: uuid(),
-      title: "Untitled Note",
-      body: "",
-      lastModified:  Date.now(),
-    };
-    //setovanje pocetne vrednosti noda
-    setNotes([newNote, ...notes]);
-  };
-  //funkcija za brisanje noda
-  const onDeleteNote = (idDeleteNote) => {
-    //setovanje Noda,tj brisanje nosa koriscenjem fitler() metode,targetuje se Noud preko id-ja
-    setNotes(notes.filter((note) => note.id !== idDeleteNote));
-  };
-  //funkcija za selektovanje 1 noda aktivnog
-  const getActiveNote = () => {
-    return notes.find((note) => note.id === activeNote);
-  };
-
-  //funkcija za update noda
-  const onUpdateNote = (updatedNote) => {
-    const updatedNotesArr = notes.map((note) => {
-      if (note.id === updatedNote.id) {
-        return updatedNote;
-      }
-
-      return note;
-    });
-
-    setNotes(updatedNotesArr);
-  };
-
+  const [notes,setNotes] = useState(dummyNotes);
   return (
     <div className="App">
-      <SideBar
-        notes={notes}
-        onAddNote={onAddNote}
-        onDeleteNote={onDeleteNote}
-        activeNote={activeNote}
-        setActiveNote={setActiveNote}
-      />
-      <Main activeNote={getActiveNote()} onUpdateNote={onUpdateNote} />
+      <main id="app">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Notes notes={notes} />} />
+            <Route path="/create-note" element={<CreateNote />} />
+            <Route path="/edit-note" element={<EditNote />} />
+          </Routes>
+        </BrowserRouter>
+      </main>
     </div>
   );
 }
